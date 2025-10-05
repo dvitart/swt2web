@@ -1,0 +1,115 @@
+/* Grundlegende Stile und Dark Mode */
+body {
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 1.5vw 0; 
+    overflow: hidden;
+}
+
+/* Header-Styling */
+header {
+    text-align: center;
+    margin-bottom: 2vh;
+    padding-bottom: 1vh;
+}
+header h1 {
+    margin: 0;
+    font-size: 2.5vw;
+    color: #ffffff;
+    font-weight: 600;
+}
+header h2 {
+    margin: 0;
+    font-size: 1.6vw;
+    font-weight: normal;
+    color: #c0c0e0;
+}
+
+/* Hauptcontainer für die Gruppen */
+#pairing-board {
+    /* FIX: Umstellung auf CSS Grid für eine stabilere vertikale Ausrichtung */
+    display: grid;
+    grid-template-columns: 1fr; /* Erzeugt eine einzelne Spalte */
+    justify-items: stretch; /* Zwingt die Kinder, die volle Breite einzunehmen */
+    gap: 2.5vw;
+    height: 78vh;
+    width: 95%;
+    max-width: 1600px;
+    margin: 0 auto; 
+}
+
+/* Upload-Styling (unverändert) */
+.upload-container { display: flex; justify-content: center; align-items: center; width: 100%; }
+.upload-label { background-color: #1e90ff; color: white; padding: 20px 40px; border-radius: 8px; cursor: pointer; font-size: 1.5rem; }
+#swt-file-input { display: none; }
+
+/* Gruppen-Styling */
+.pairing-group { 
+    padding: 15px;
+    box-sizing: border-box;
+}
+.group-title { font-size: 1.4vw; font-weight: bold; color: #1e90ff; margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 1px solid #3a3a5e; }
+
+.card-grid { 
+    display: grid; 
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.2vw; 
+}
+
+/* Karten-Design (unverändert) */
+.card {
+    background-color: #2a2a4e;
+    border: 1px solid #4a4a7e;
+    border-radius: 10px;
+    padding: 8px 12px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.card.finished { opacity: 0.7; }
+
+.card-top-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.3vw; 
+    font-weight: bold;
+    margin-bottom: 6px; 
+}
+.board-number { color: #fff; }
+.result { color: #32cd32; font-size: 1.1vw; }
+
+.player-line {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px; 
+}
+.player-icon {
+    display: inline-block;
+    width: 0.9vw;
+    height: 0.9vw;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+.player-icon.white { background-color: #ffffff; border: 1px solid #ddd; }
+.player-icon.black { background-color: #333333; border: 1px solid #555; }
+
+.player-name {
+    font-size: 1.05vw;
+    color: #e0e0e0;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.player-name strong {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* Footer (unverändert) */
+footer { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #1a1a2e; text-align: center; padding: 1vh; font-size: 1.4vw; border-top: 1px solid #3a3a5e; box-sizing: border-box; }
+body.display-site { overflow: auto; height: auto; }
+body.display-site #pairing-board { height: auto; }
+body.display-site footer { position: static; margin-top: 20px; }

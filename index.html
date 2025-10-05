@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schachturnier-Anzeige</title>
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+
+    <header>
+        <h1 id="tournament-name">Schachturnier-Anzeige</h1>
+        <h2 id="round-info">Bitte laden Sie eine SWT-Datei hoch</h2>
+    </header>
+
+    <main id="pairing-board">
+        <div class="upload-container">
+            <label for="swt-file-input" class="upload-label">
+                SWT-Datei auswählen
+            </label>
+            <input type="file" id="swt-file-input" accept=".swt">
+        </div>
+    </main>
+
+    <footer>
+        <div id="pagination-info"></div>
+    </footer>
+
+    <script src="swtparser.js"></script>
+    <script src="swt2jsonConverter.js"></script>
+    
+    <script src="app2.js"></script>
+</body>
+</html>
