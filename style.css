@@ -1,0 +1,126 @@
+/* Allgemeine Stile */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 1.5em;
+}
+
+.container {
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 1.5em;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Upload-Bereich */
+#upload-section h1 { color: #005f73; }
+.file-input { width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1; }
+.file-label { display: inline-block; padding: 12px 30px; font-size: 1.2em; font-weight: bold; color: white; background-color: #0a9396; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
+.file-label:hover { background-color: #005f73; }
+
+/* Anzeige-Bereich */
+.header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5em;
+}
+#tournament-name { color: #005f73; margin: 0; text-align: left; }
+#pagination-info {
+    font-size: 1.2em;
+    font-style: italic;
+    color: #6c757d;
+}
+#round-title { color: #BF652E; margin-top: 0.25em; text-align: left;}
+
+/* Container für die beiden Tabellen */
+#tables-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2em;
+}
+
+/* Tabellen-Stile */
+.pairing-table {
+    flex: 1;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+    font-size: 1.1em;
+}
+.pairing-table th, .pairing-table td {
+    padding: 0.4em;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+.pairing-table th { text-align: left; }
+.pairing-table td:first-child {
+    text-align: center;
+    font-weight: 700;
+    color: #343a40;
+    width: 8%;
+    background-color: #f8f9fa;
+}
+.pairing-table thead {
+    background-color: #e9ecef;
+    font-size: 0.9em;
+    color: #495057;
+}
+.pairing-table .player-cell {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    border-radius: 4px;
+}
+
+.placeholder-row td {
+    visibility: hidden;
+}
+
+/* Farbcodierungs-Klassen */
+.color-group-a { background-color: #005f73; color: white; }
+.color-group-b { background-color: #BF652E; color: white; }
+.color-group-c { background-color: #087E8B; color: white; }
+.color-group-d { background-color: #7E4C74; color: white; }
+
+/* Legende */
+#legend {
+    margin-top: 1.5em;
+    padding-top: 1em;
+    border-top: 2px solid #eee;
+    display: flex;
+    justify-content: center;
+    gap: 3em; /* VERBESSERT: Mehr Abstand zwischen den Elementen */
+    flex-wrap: wrap;
+}
+.legend-item {
+    font-weight: bold;
+    font-size: 1.4em; /* VERBESSERT: Deutlich größere Schrift */
+    color: #343a40;
+    padding: 0;
+    background-color: transparent !important;
+}
+.legend-item::before {
+    content: '';
+    display: inline-block;
+    width: 1em; /* Skaliert automatisch mit der größeren Schrift mit */
+    height: 1em; /* Skaliert automatisch mit der größeren Schrift mit */
+    margin-right: 0.6em; /* VERBESSERT: Etwas mehr Abstand zum Text */
+    vertical-align: middle;
+    border-radius: 3px;
+}
+.legend-item.color-group-a::before { background-color: #005f73; }
+.legend-item.color-group-b::before { background-color: #BF652E; }
+.legend-item.color-group-c::before { background-color: #087E8B; }
+.legend-item.color-group-d::before { background-color: #7E4C74; }
