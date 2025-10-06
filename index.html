@@ -2,33 +2,32 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schachturnier-Anzeige</title>
-    <link rel="stylesheet" href="style2.css">
+    <title>Schachturnier Paarungen</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <header>
-        <h1 id="tournament-name">Schachturnier-Anzeige</h1>
-        <h2 id="round-info">Bitte laden Sie eine SWT-Datei hoch</h2>
-    </header>
-
-    <main id="pairing-board">
-        <div class="upload-container">
-            <label for="swt-file-input" class="upload-label">
-                SWT-Datei auswählen
-            </label>
-            <input type="file" id="swt-file-input" accept=".swt">
+    <div class="container">
+        <div id="upload-section">
+            <h1>Paarungsanzeige</h1>
+            <p>Bitte die aktuelle .SWT-Datei des Turniers hochladen.</p>
+            <input type="file" id="swt-file-input" accept=".swt" class="file-input">
+            <label for="swt-file-input" class="file-label">Datei auswählen</label>
         </div>
-    </main>
 
-    <footer>
-        <div id="pagination-info"></div>
-    </footer>
+        <div id="display-section" class="hidden">
+            <div class="header-info">
+                <h2 id="tournament-name"></h2>
+                <div id="pagination-info"></div> </div>
+            <h3 id="round-title"></h3>
+            
+            <div id="tables-container"></div>
+
+            <div id="legend"></div>
+        </div>
+    </div>
 
     <script src="swtparser.js"></script>
     <script src="swt2jsonConverter.js"></script>
-    
-    <script src="app2.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
