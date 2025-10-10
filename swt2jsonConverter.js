@@ -115,7 +115,7 @@ function convertSwtToJson(swtData) {
           if (!whitePlayer || !blackPlayer) return;
 
           rounds[roundNum].pairings.push({
-              board: rounds[roundNum].pairings.length + 1,
+              board: pairing['4004'],
               white: { id: whitePlayer.id, name: whitePlayer.name },
               black: { id: blackPlayer.id, name: blackPlayer.name },
               result: getResult(pairing['4002'], 'white'),
