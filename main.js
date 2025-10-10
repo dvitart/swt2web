@@ -80,28 +80,39 @@ document.addEventListener('DOMContentLoaded', () => {
         allPairings = roundData.pairings;
         roundTitleEl.textContent = `Paarungen Runde ${roundData.round}`;
 
-        // KORREKTUR: Sortierung nach Brettnummer wieder hinzugefügt
         allPairings.sort((a, b) => a.board - b.board);
 
         totalPages = Math.ceil(allPairings.length / pageSize);
-        currentPage = 0;
+        
+        // Startseite aus dem nrPage-Parameter auslesen
+        const pageParam = parseInt(params.get('nrPage'), 10);
+        if (!isNaN(pageParam) && pageParam >= 1 && pageParam <= totalPages) {
+            currentPage = pageParam - 1; // -1, da Seitenzählung bei 1 beginnt, der Index aber bei 0
+        } else {
+            currentPage = 0;
+        }
 
         if (paginationInterval) {
             clearInterval(paginationInterval);
         }
 
-        showCurrentPage();
+        showCurrentPage(); // Zeigt die Startseite (entweder 1 oder die aus nrPage)
 
         const defaultIntervalSeconds = 30;
         const minIntervalSeconds = 5;
         let intervalTimeMs = defaultIntervalSeconds * 1000;
         
         const intervalParam = parseInt(params.get('interval'), 10);
-        if (!isNaN(intervalParam) && intervalParam >= minIntervalSeconds) {
+
+        // NEU: Sonderfall interval=0 behandeln
+        if (intervalParam === 0) {
+            intervalTimeMs = 0; // Deaktiviert das Blättern
+        } else if (!isNaN(intervalParam) && intervalParam >= minIntervalSeconds) {
             intervalTimeMs = intervalParam * 1000;
         }
 
-        if (totalPages > 1) {
+        // Blättern nur starten, wenn es mehrere Seiten gibt UND das Intervall nicht 0 ist
+        if (totalPages > 1 && intervalTimeMs > 0) {
             paginationInterval = setInterval(nextPage, intervalTimeMs);
         }
         
@@ -167,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="player-cell ${blackPlayerStyle.class}">${p.black.name}</td>
             `;
             tbody.appendChild(row);
-});
+        });
 
         const actualRowCount = pairingsArray.length;
         if (actualRowCount < targetRowCount) {
