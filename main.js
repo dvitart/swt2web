@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Zustand für die Paginierung
     let currentPage = 0;
-    const pageSize = 50; // 2 Spalten * 25 Bretter
+    const pageSize = 50;
     let totalPages = 0;
     let allPairings = [];
     let paginationInterval = null;
@@ -23,7 +23,17 @@ document.addEventListener('DOMContentLoaded', () => {
         'S-Z': { class: 'color-group-d' },
     };
 
-    // Event Listener für den Datei-Upload
+    const storedData = sessionStorage.getItem('swtData');
+    if (storedData) {
+        try {
+            const cleanJson = JSON.parse(storedData);
+            setupDisplay(cleanJson);
+        } catch (e) {
+            console.error("Fehler beim Parsen der Daten aus sessionStorage:", e);
+            sessionStorage.removeItem('swtData');
+        }
+    }
+
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (!file) { return; }
@@ -35,7 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dataView = new DataView(arrayBuffer);
                 const rawSwtData = parseDataView(dataView);
                 const cleanJson = convertSwtToJson(rawSwtData);
+
+                sessionStorage.setItem('swtData', JSON.stringify(cleanJson));
+                
                 setupDisplay(cleanJson);
+
             } catch (error) {
                 console.error("Fehler beim Verarbeiten der SWT-Datei:", error);
                 alert("Die Datei konnte nicht verarbeitet werden.");
@@ -49,8 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Die Datei enthält keine gültigen Runden-Daten.");
             return;
         }
-
+        
+        tournamentNameEl.textContent = data.tournamentInfo.name;
         const params = new URLSearchParams(window.location.search);
+        
         let roundNumber = parseInt(params.get('nrRound'), 10);
         if (isNaN(roundNumber) || roundNumber < 1 || roundNumber > data.roundPairings.length) {
             roundNumber = data.roundPairings.length;
@@ -61,11 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(`Runde ${roundNumber} wurde nicht gefunden.`);
             return;
         }
-
-        tournamentNameEl.textContent = data.tournamentInfo.name;
+        allPairings = roundData.pairings;
         roundTitleEl.textContent = `Paarungen Runde ${roundData.round}`;
 
-        allPairings = roundData.pairings;
+        // KORREKTUR: Sortierung nach Brettnummer wieder hinzugefügt
+        allPairings.sort((a, b) => a.board - b.board);
+
         totalPages = Math.ceil(allPairings.length / pageSize);
         currentPage = 0;
 
@@ -75,8 +92,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         showCurrentPage();
 
+        const defaultIntervalSeconds = 30;
+        const minIntervalSeconds = 5;
+        let intervalTimeMs = defaultIntervalSeconds * 1000;
+        
+        const intervalParam = parseInt(params.get('interval'), 10);
+        if (!isNaN(intervalParam) && intervalParam >= minIntervalSeconds) {
+            intervalTimeMs = intervalParam * 1000;
+        }
+
         if (totalPages > 1) {
-            paginationInterval = setInterval(nextPage, 30000);
+            paginationInterval = setInterval(nextPage, intervalTimeMs);
         }
         
         renderLegend();
@@ -93,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstHalf = pairingsForPage.slice(0, midpoint);
         const secondHalf = pairingsForPage.slice(midpoint);
 
-        const targetRowCount = pageSize / 2; // Jede Spalte soll 25 Zeilen hoch sein
+        const targetRowCount = pageSize / 2;
 
         tablesContainerEl.innerHTML = '';
         tablesContainerEl.appendChild(createTableForPairings(firstHalf, targetRowCount));
@@ -125,18 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    /**
-     * Erstellt eine Tabelle und füllt sie mit Platzhaltern auf eine Zielhöhe auf.
-     * @param {Array} pairingsArray Die anzuzeigenden Paarungen.
-     * @param {number} targetRowCount Die Zielanzahl der Zeilen (z.B. 25).
-     */
     function createTableForPairings(pairingsArray, targetRowCount) {
         const table = document.createElement('table');
         table.className = 'pairing-table';
         table.innerHTML = `<thead><tr><th>Brett</th><th>Weiß</th><th>Schwarz</th></tr></thead>`;
         const tbody = document.createElement('tbody');
         
-        // Echte Paarungs-Zeilen einfügen
         pairingsArray.forEach(p => {
             const row = document.createElement('tr');
             const whitePlayerStyle = getPlayerStyling(p.white.name);
@@ -147,9 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="player-cell ${blackPlayerStyle.class}">${p.black.name}</td>
             `;
             tbody.appendChild(row);
-        });
+});
 
-        // VERBESSERT: Unsichtbare Platzhalter-Zeilen für stabile Höhe einfügen
         const actualRowCount = pairingsArray.length;
         if (actualRowCount < targetRowCount) {
             for (let i = actualRowCount; i < targetRowCount; i++) {
