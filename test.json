@@ -42,7 +42,7 @@
     ],
     "params": {
       "seitenwechsel": 0,
-      "round": 0,
+      "round": 4,
       "show": 1,
       "page": 1
     }
@@ -66,9 +66,9 @@
     ],
     "params": {
       "seitenwechsel": 1,
-      "round": 0,
-      "show": 0,
-      "page": 0
+       "round": 4,
+      "show": 1,
+      "page": 2
     }
   },
   "EITN3E": {
