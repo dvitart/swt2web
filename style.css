@@ -94,6 +94,20 @@ body {
 .color-group-c { background-color: #087E8B; color: white; }
 .color-group-d { background-color: #7E4C74; color: white; }
 
+/* ... (alle bisherigen Stile bleiben unverändert) ... */
+
+/* NEU: Styling für die "In Kürze"-Nachricht */
+#coming-soon-section {
+    padding: 4em 2em;
+}
+
+.coming-soon-text {
+    font-size: 1.8em;
+    color: #6c757d;
+    margin-top: 1em;
+}
+
+
 /* Legende */
 #legend {
     margin-top: 1.5em;
