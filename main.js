@@ -23,17 +23,81 @@ document.addEventListener('DOMContentLoaded', () => {
         'S-Z': { class: 'color-group-d' },
     };
 
-    const storedData = sessionStorage.getItem('swtData');
-    if (storedData) {
-        try {
-            const cleanJson = JSON.parse(storedData);
-            setupDisplay(cleanJson);
-        } catch (e) {
-            console.error("Fehler beim Parsen der Daten aus sessionStorage:", e);
-            sessionStorage.removeItem('swtData');
+    // --- INITIALISIERUNG ---
+    const params = new URLSearchParams(window.location.search);
+    const deviceId = params.get('deviceId');
+
+    if (deviceId) {
+        // Modus 1: API-Polling bei vorhandener deviceId
+        uploadSection.classList.add('hidden');
+        console.log(`Geräte-ID '${deviceId}' gefunden. Starte API-Polling.`);
+        TournamentFetcher.start(deviceId, 20000); // Konfiguration alle 20s abrufen
+        setInterval(checkForUpdates, 5000); // Alle 5s prüfen, ob ein Update nötig ist
+        checkForUpdates(); // Sofortiger erster Check
+
+    } else {
+        // Modus 2: Fallback auf manuellen Dateiupload
+        console.log("Keine Geräte-ID gefunden. Manuelle Dateiupload-Logik aktiv.");
+        const storedData = sessionStorage.getItem('swtJsonData');
+        if (storedData) {
+            try {
+                const parsedStoredData = JSON.parse(storedData);
+                if(parsedStoredData.jsonData) {
+                    setupDisplay(parsedStoredData.jsonData);
+                }
+            } catch (e) {
+                console.error("Fehler beim Parsen der Daten aus sessionStorage:", e);
+                sessionStorage.removeItem('swtJsonData');
+            }
         }
     }
 
+    /**
+     * Kernfunktion im API-Modus: Prüft, ob die SWT-Datei auf dem Server neuer ist als die lokal gespeicherte.
+     * Wenn ja, wird sie heruntergeladen, verarbeitet und die Anzeige aktualisiert.
+     */
+    async function checkForUpdates() {
+        const config = TournamentFetcher.getConfig();
+        if (!config || !config.swtUrl || config.error) {
+            console.log("Warte auf gültige Konfigurationsdaten vom Server...");
+            return;
+        }
+
+        const storedDataRaw = sessionStorage.getItem('swtJsonData');
+        const storedData = storedDataRaw ? JSON.parse(storedDataRaw) : {};
+
+        if (!storedData.lastModified || storedData.lastModified !== config.lastModified) {
+            console.log(`Neue Daten erkannt (API: ${config.lastModified}, Lokal: ${storedData.lastModified || 'N/A'}). Lade SWT-Datei...`);
+            
+            try {
+                // SWT-Datei von der in der Konfiguration angegebenen URL laden
+                const response = await fetch(config.swtUrl);
+                if (!response.ok) throw new Error(`SWT-Datei konnte nicht geladen werden: ${response.statusText}`);
+                const swtArrayBuffer = await response.arrayBuffer();
+                
+                // SWT-Datei parsen und in sauberes JSON umwandeln
+                const dataView = new DataView(swtArrayBuffer);
+                const rawSwtData = parseDataView(dataView);
+                const cleanJson = convertSwtToJson(rawSwtData);
+
+                // Das neue, saubere JSON zusammen mit dem Zeitstempel im sessionStorage speichern
+                sessionStorage.setItem('swtJsonData', JSON.stringify({
+                    lastModified: config.lastModified,
+                    jsonData: cleanJson
+                }));
+                
+                // Die Anzeige mit den frischen Daten aufbauen
+                setupDisplay(cleanJson, config.params);
+
+            } catch(error) {
+                console.error("Fehler beim Herunterladen oder Verarbeiten der SWT-Datei:", error);
+            }
+        }
+    }
+
+    /**
+     * Event-Listener für den manuellen Dateiupload (Fallback-Modus).
+     */
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (!file) { return; }
@@ -46,7 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rawSwtData = parseDataView(dataView);
                 const cleanJson = convertSwtToJson(rawSwtData);
 
-                sessionStorage.setItem('swtData', JSON.stringify(cleanJson));
+                sessionStorage.setItem('swtJsonData', JSON.stringify({
+                    lastModified: `manual-${Date.now()}`, // Eindeutiger Zeitstempel für manuelle Uploads
+                    jsonData: cleanJson
+                }));
                 
                 setupDisplay(cleanJson);
 
@@ -58,23 +125,29 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsArrayBuffer(file);
     });
     
-    function setupDisplay(data) {
+    /**
+     * Baut die gesamte Anzeige (Tabellen, Legende, Paginierung) basierend auf den Turnierdaten auf.
+     * @param {object} data Das saubere JSON-Objekt aus swt2jsonConverter.js.
+     * @param {object} apiParams Optionale Parameter von der API (z.B. für Runden-Vorauswahl).
+     */
+    function setupDisplay(data, apiParams = {}) {
         if (!data || !data.roundPairings || data.roundPairings.length === 0) {
-            alert("Die Datei enthält keine gültigen Runden-Daten.");
+            // Zeigt keine Fehlermeldung, um bei leeren Turnieren nicht zu stören
             return;
         }
         
         tournamentNameEl.textContent = data.tournamentInfo.name;
         const params = new URLSearchParams(window.location.search);
         
-        let roundNumber = parseInt(params.get('nrRound'), 10);
-        if (isNaN(roundNumber) || roundNumber < 1 || roundNumber > data.roundPairings.length) {
+        // Runde: URL-Parameter hat Vorrang, dann API-Parameter, dann letzte Runde
+        let roundNumber = parseInt(params.get('nrRound'), 10) || apiParams.round || data.roundPairings.length;
+        if (roundNumber < 1 || roundNumber > data.roundPairings.length) {
             roundNumber = data.roundPairings.length;
         }
 
         const roundData = data.roundPairings[roundNumber - 1];
         if (!roundData) {
-            alert(`Runde ${roundNumber} wurde nicht gefunden.`);
+            console.error(`Runde ${roundNumber} wurde nicht gefunden.`);
             return;
         }
         allPairings = roundData.pairings;
@@ -84,10 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         totalPages = Math.ceil(allPairings.length / pageSize);
         
-        // Startseite aus dem nrPage-Parameter auslesen
-        const pageParam = parseInt(params.get('nrPage'), 10);
-        if (!isNaN(pageParam) && pageParam >= 1 && pageParam <= totalPages) {
-            currentPage = pageParam - 1; // -1, da Seitenzählung bei 1 beginnt, der Index aber bei 0
+        // Startseite: URL-Parameter hat Vorrang, dann API-Parameter, dann Seite 1
+        const pageParam = parseInt(params.get('nrPage'), 10) || apiParams.page || 1;
+        if (pageParam >= 1 && pageParam <= totalPages) {
+            currentPage = pageParam - 1;
         } else {
             currentPage = 0;
         }
@@ -96,22 +169,17 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(paginationInterval);
         }
 
-        showCurrentPage(); // Zeigt die Startseite (entweder 1 oder die aus nrPage)
+        showCurrentPage(); // Zeigt die Startseite sofort an
 
-        const defaultIntervalSeconds = 30;
-        const minIntervalSeconds = 5;
-        let intervalTimeMs = defaultIntervalSeconds * 1000;
-        
-        const intervalParam = parseInt(params.get('interval'), 10);
-
-        // NEU: Sonderfall interval=0 behandeln
+        // Intervall: URL-Parameter hat Vorrang, dann API-Parameter, dann 30s
+        const intervalParam = params.get('interval') !== null ? parseInt(params.get('interval'), 10) : (apiParams.seitenwechsel !== undefined ? apiParams.seitenwechsel : 30);
+        let intervalTimeMs = 30 * 1000;
         if (intervalParam === 0) {
-            intervalTimeMs = 0; // Deaktiviert das Blättern
-        } else if (!isNaN(intervalParam) && intervalParam >= minIntervalSeconds) {
+            intervalTimeMs = 0;
+        } else if (!isNaN(intervalParam) && intervalParam >= 5) {
             intervalTimeMs = intervalParam * 1000;
         }
 
-        // Blättern nur starten, wenn es mehrere Seiten gibt UND das Intervall nicht 0 ist
         if (totalPages > 1 && intervalTimeMs > 0) {
             paginationInterval = setInterval(nextPage, intervalTimeMs);
         }
@@ -121,6 +189,9 @@ document.addEventListener('DOMContentLoaded', () => {
         displaySection.classList.remove('hidden');
     }
 
+    /**
+     * Zeigt die Tabellen für die aktuell ausgewählte Seite an.
+     */
     function showCurrentPage() {
         const startIndex = currentPage * pageSize;
         const endIndex = startIndex + pageSize;
@@ -143,6 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    /**
+     * Wechselt zur nächsten Seite oder startet von vorn.
+     */
     function nextPage() {
         currentPage++;
         if (currentPage >= totalPages) {
@@ -151,6 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
         showCurrentPage();
     }
     
+    /**
+     * Generiert die Farblegende am unteren Rand.
+     */
     function renderLegend() {
         legendEl.innerHTML = '';
         for (const range in colorScheme) {
@@ -162,6 +239,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    /**
+     * Erstellt eine einzelne HTML-Tabelle und füllt sie ggf. mit leeren Zeilen auf.
+     * @param {Array} pairingsArray - Die Paarungen für diese Tabelle.
+     * @param {number} targetRowCount - Die gewünschte Anzahl an Zeilen.
+     * @returns {HTMLTableElement} Das fertige Tabellenelement.
+     */
     function createTableForPairings(pairingsArray, targetRowCount) {
         const table = document.createElement('table');
         table.className = 'pairing-table';
@@ -194,6 +277,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return table;
     }
 
+    /**
+     * Ermittelt die CSS-Klasse für einen Spielernamen basierend auf dem Nachnamen.
+     * @param {string} playerName - Der volle Name des Spielers.
+     * @returns {object} Ein Objekt mit der CSS-Klasse.
+     */
     function getPlayerStyling(playerName) {
         const nameParts = playerName.split(' ');
         const lastName = nameParts[nameParts.length - 1];
@@ -201,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (const range in colorScheme) {
             const [start, end] = range.split('-');
-            if (firstLetter.localeCompare(start) >= 0 && firstLetter.localeCompare(end) <= 0) {
+            if (firstLetter.localeCompare(start, 'de', { sensitivity: 'base' }) >= 0 && firstLetter.localeCompare(end, 'de', { sensitivity: 'base' }) <= 0) {
                 return colorScheme[range];
             }
         }
