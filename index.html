@@ -9,15 +9,21 @@
     <div class="container">
         <div id="upload-section">
             <h1>Paarungsanzeige</h1>
-            <p>Bitte die aktuelle .SWT-Datei des Turniers hochladen.</p>
+            <p>Bitte die aktuelle .SWT-Datei des Turniers hochladen oder eine Geräte-ID in der URL angeben.</p>
             <input type="file" id="swt-file-input" accept=".swt" class="file-input">
             <label for="swt-file-input" class="file-label">Datei auswählen</label>
+        </div>
+
+        <div id="coming-soon-section" class="hidden">
+            <h1>Paarungsanzeige</h1>
+            <p class="coming-soon-text">Die Paarungen für die nächste Runde werden in Kürze veröffentlicht.</p>
         </div>
 
         <div id="display-section" class="hidden">
             <div class="header-info">
                 <h2 id="tournament-name"></h2>
-                <div id="pagination-info"></div> </div>
+                <div id="pagination-info"></div>
+            </div>
             <h3 id="round-title"></h3>
             
             <div id="tables-container"></div>
@@ -32,4 +38,3 @@
     <script src="main.js"></script>
 </body>
 </html>
-
