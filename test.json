@@ -1,0 +1,122 @@
+{
+  "123456": {
+    "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760120839739__2024_10_12_Open.SWT",
+    "lastModified": 1760120839,
+    "swtFiles": [
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760108433859__2024_10_12_Open.SWT",
+        "lastModified": 1760108433
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109384979__2024_10_12_Open.SWT",
+        "lastModified": 1760109384
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760120839739__2024_10_12_Open.SWT",
+        "lastModified": 1760120839
+      }
+    ],
+    "params": {
+      "seitenwechsel": 0,
+      "round": 0,
+      "show": 1,
+      "page": 1
+    }
+  },
+  "XBOE34": {
+    "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760120839739__2024_10_12_Open.SWT",
+    "lastModified": 1760120839,
+    "swtFiles": [
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760108433859__2024_10_12_Open.SWT",
+        "lastModified": 1760108433
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109384979__2024_10_12_Open.SWT",
+        "lastModified": 1760109384
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760120839739__2024_10_12_Open.SWT",
+        "lastModified": 1760120839
+      }
+    ],
+    "params": {
+      "seitenwechsel": 0,
+      "round": 0,
+      "show": 1,
+      "page": 1
+    }
+  },
+  "23GH2U": {
+    "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109391222__2024_10_10_Challengers_neu.SWT",
+    "lastModified": 1760109391,
+    "swtFiles": [
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760108442893__2024_10_10_Challengers_neu.SWT",
+        "lastModified": 1760108442
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109388092__2024_10_12_Open.SWT",
+        "lastModified": 1760109388
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109391222__2024_10_10_Challengers_neu.SWT",
+        "lastModified": 1760109391
+      }
+    ],
+    "params": {
+      "seitenwechsel": 1,
+      "round": 0,
+      "show": 0,
+      "page": 0
+    }
+  },
+  "EITN3E": {
+    "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109391222__2024_10_10_Challengers_neu.SWT",
+    "lastModified": 1760109391,
+    "swtFiles": [
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760108442893__2024_10_10_Challengers_neu.SWT",
+        "lastModified": 1760108442
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109388092__2024_10_12_Open.SWT",
+        "lastModified": 1760109388
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109391222__2024_10_10_Challengers_neu.SWT",
+        "lastModified": 1760109391
+      }
+    ],
+    "params": {
+      "seitenwechsel": 0,
+      "round": 0,
+      "show": 0,
+      "page": 1
+    }
+  },
+  "25XE3M": {
+    "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109391222__2024_10_10_Challengers_neu.SWT",
+    "lastModified": 1760109391,
+    "swtFiles": [
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760108442893__2024_10_10_Challengers_neu.SWT",
+        "lastModified": 1760108442
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109388092__2024_10_12_Open.SWT",
+        "lastModified": 1760109388
+      },
+      {
+        "swtUrl": "https://anmeldung-sjsh.de/seite2/upload/swts/1760109391222__2024_10_10_Challengers_neu.SWT",
+        "lastModified": 1760109391
+      }
+    ],
+    "params": {
+      "seitenwechsel": 1,
+      "changetime": 1000,
+      "round": 5,
+      "show": 0
+    }
+  }
+}
