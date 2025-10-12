@@ -259,8 +259,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getPlayerStyling(playerName) {
-        const nameParts = playerName.split(' ');
-        const lastName = nameParts[nameParts.length - 1];
+        const nameParts = playerName.split(',');
+        const lastName = nameParts[0];
         const firstLetter = lastName.charAt(0).toUpperCase();
 
         for (const range in colorScheme) {
@@ -272,3 +272,4 @@ document.addEventListener('DOMContentLoaded', () => {
         return { class: '' };
     }
 });
+
