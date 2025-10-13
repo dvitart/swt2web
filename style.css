@@ -88,11 +88,27 @@ body {
     visibility: hidden;
 }
 
-/* Farbcodierungs-Klassen */
-.color-group-a { background-color: #005f73; color: white; }
-.color-group-b { background-color: #BF652E; color: white; }
-.color-group-c { background-color: #087E8B; color: white; }
-.color-group-d { background-color: #7E4C74; color: white; }
+/* Eine besser unterscheidbare und zugängliche Farbpalette */
+
+.color-group-a { 
+  background-color: #005f73; /* Dunkles Blaugrün (beibehalten) */
+  color: white; 
+}
+
+.color-group-b { 
+  background-color: #BF652E; /* Warmes Orangebraun (beibehalten) */
+  color: white; 
+}
+
+.color-group-c { 
+  background-color: #6A5D9E; /* Ein klares, sattes Violett */
+  color: white; 
+}
+
+.color-group-d { 
+  background-color: #556B2F; /* Ein gedecktes Olivgrün */
+  color: white; 
+}
 
 /* ... (alle bisherigen Stile bleiben unverändert) ... */
 
@@ -136,5 +152,5 @@ body {
 }
 .legend-item.color-group-a::before { background-color: #005f73; }
 .legend-item.color-group-b::before { background-color: #BF652E; }
-.legend-item.color-group-c::before { background-color: #087E8B; }
-.legend-item.color-group-d::before { background-color: #7E4C74; }
+.legend-item.color-group-c::before { background-color: #6A5D9E; }
+.legend-item.color-group-d::before { background-color: #556B2F; }
